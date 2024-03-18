@@ -16,6 +16,7 @@ class TestController extends Controller
     }
 
     public function imageStore()
+
     {
         return $this->imageService->store("Hello, World!");
     }
