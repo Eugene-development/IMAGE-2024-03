@@ -2,20 +2,34 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Storage;
 use App\Contracts\ImageServiceInterface;
 
 class ImageService implements ImageServiceInterface
 {
-    /**
-     * Create a new class instance.
-     */
-    public function __construct()
+    public function store($request)
     {
-        //
-    }
+        // Проверка наличия файла 'image' и заголовка 'Project'
+        if (!$request->hasFile('image') || !$request->header('Project')) {
+            // Возвращаем ошибку, если что-то отсутствует
+            return response()->json(['error' => 'Необходим файл и заголовок Project'], 400);
+        }
 
-    public function store()
-    {
-        return "Sending greeting: xxxx";
+        try {
+            // Определение проекта из заголовка
+            $projectHeaderValue = $request->header('Project');
+
+            // Назначение пути до целевой папки в бакете
+            $path = $request->file('image')->store($projectHeaderValue, config('filesystems.default'));
+
+            // Запись в бакет с публичными правами
+            Storage::disk(config('filesystems.default'))->setVisibility($path, 'public');
+
+            // Возврат хэша файла для записи в БД
+            return basename($path);
+        } catch (\Exception $e) {
+            \Log::error('Ошибка при сохранении файла: ' . $e->getMessage());
+            return response()->json(['error' => 'Ошибка при сохранении файла'], 500);
+        }
     }
 }

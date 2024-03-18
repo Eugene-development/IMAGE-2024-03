@@ -4,5 +4,5 @@ namespace App\Contracts;
 
 interface ImageServiceInterface
 {
-    public function store();
+    public function store($request);
 }

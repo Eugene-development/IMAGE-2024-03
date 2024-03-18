@@ -8,5 +8,5 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post('/upload-image', [ImageController::class, 'store']);
+Route::post('/upload-image', [ImageController::class, 'imageStore']);
 Route::get('/ggg', [TestController::class, 'imageStore']);

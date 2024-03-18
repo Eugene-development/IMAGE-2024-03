@@ -3,34 +3,20 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-
+use App\Contracts\ImageServiceInterface;
 
 class ImageController extends Controller
 {
-    public function store(Request $request)
+    protected $imageService;
+
+    // Инъекция через конструктор
+    public function __construct(ImageServiceInterface $imageService)
     {
-        // Проверка наличия файла 'image' и заголовка 'Project'
-        if (!$request->hasFile('image') || !$request->header('Project')) {
-            // Возвращаем ошибку, если что-то отсутствует
-            return response()->json(['error' => 'Необходим файл и заголовок Project'], 400);
-        }
+        $this->imageService = $imageService;
+    }
 
-        try {
-            // Определение проекта из заголовка
-            $projectHeaderValue = $request->header('Project');
-
-            // Назначение пути до целевой папки в бакете
-            $path = $request->file('image')->store($projectHeaderValue, config('filesystems.default'));
-
-            // Запись в бакет с публичными правами
-            Storage::disk(config('filesystems.default'))->setVisibility($path, 'public');
-
-            // Возврат хэша файла для записи в БД
-            return basename($path);
-        } catch (\Exception $e) {
-            \Log::error('Ошибка при сохранении файла: ' . $e->getMessage());
-            return response()->json(['error' => 'Ошибка при сохранении файла'], 500);
-        }
+    public function imageStore(Request $request)
+    {
+        return $this->imageService->store($request);
     }
 }
