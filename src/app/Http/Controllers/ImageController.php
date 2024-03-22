@@ -30,7 +30,7 @@ class ImageController extends Controller
      * @param Request $request The request object.
      * @return mixed The result of the image storage operation.
      */
-    public function imageStore(Request $request)
+    public function __invoke(Request $request)
     {
         return $this->imageService->store($request);
     }
