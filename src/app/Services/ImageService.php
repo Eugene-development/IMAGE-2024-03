@@ -3,12 +3,14 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use App\Contracts\ImageServiceInterface;
 
 class ImageService implements ImageServiceInterface
 {
     public function store($request)
     {
+        // dd($request->hasFile('image'));
         // Проверка наличия файла 'image' и заголовка 'Project'
         if (!$request->hasFile('image') || !$request->header('Project')) {
             // Возвращаем ошибку, если что-то отсутствует
@@ -28,7 +30,7 @@ class ImageService implements ImageServiceInterface
             // Возврат хэша файла для записи в БД
             return basename($path);
         } catch (\Exception $e) {
-            \Log::error('Ошибка при сохранении файла: ' . $e->getMessage());
+            Log::error('Ошибка при сохранении файла: ' . $e->getMessage());
             return response()->json(['error' => 'Ошибка при сохранении файла'], 500);
         }
     }
