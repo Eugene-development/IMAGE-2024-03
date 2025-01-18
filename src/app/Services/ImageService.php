@@ -21,7 +21,7 @@ class ImageService implements ImageServiceInterface
             // Определение проекта из заголовка
             $projectHeaderValue = $request->header('Project');
 
-            // Назначение пути до целевой папки в бакете
+            // Назначение пути до целевой папки в бакете $projectHeaderValue
             $path = $request->file('image')->store($projectHeaderValue, config('filesystems.default'));
 
             // Запись в бакет с публичными правами
