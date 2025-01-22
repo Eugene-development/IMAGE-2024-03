@@ -11,6 +11,7 @@ class ImageService implements ImageServiceInterface
     public function store($request)
     {
         // dd($request->hasFile('image'));
+
         // Проверка наличия файла 'image' и заголовка 'Project'
         if (!$request->hasFile('image') || !$request->header('Project')) {
             // Возвращаем ошибку, если что-то отсутствует
@@ -21,8 +22,8 @@ class ImageService implements ImageServiceInterface
             // Определение проекта из заголовка
             $projectHeaderValue = $request->header('Project');
 
-            // Назначение пути до целевой папки в бакете $projectHeaderValue
-            $path = $request->file('image')->store($projectHeaderValue, config('filesystems.default'));
+            // Формируем путь с подпапкой catalog внутри бакета
+            $path = $request->file('image')->store($projectHeaderValue . '/catalog', config('filesystems.default'));
 
             // Запись в бакет с публичными правами
             Storage::disk(config('filesystems.default'))->setVisibility($path, 'public');
